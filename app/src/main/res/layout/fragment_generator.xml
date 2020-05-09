@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".myFragments.GeneratorFragment">
+
+
+	<EditText
+		android:id="@+id/editTextMinMax"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="10dp"
+		android:layout_marginTop="10dp"
+		android:layout_marginRight="10dp"
+		android:background="@drawable/border"
+		android:hint="@string/minMax"
+		android:isScrollContainer="true"
+		android:paddingStart="10dp"
+		android:paddingTop="5dp"
+		android:paddingEnd="10dp"
+		android:paddingBottom="5dp"
+		android:textStyle="bold" />
+
+	<Button
+		android:id="@+id/btnGenerateLotteryTickets"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/editTextMinMax"
+
+		android:layout_marginLeft="10dp"
+		android:layout_marginRight="10dp"
+		android:layout_marginTop="10dp"
+		android:layout_marginBottom="10dp"
+		android:textColor="@color/colorPrimaryDark"
+		android:textSize="20sp"
+		android:textStyle="bold"
+		android:text="CLICK TO GENERATE NUMBERS" />
+
+	<ListView
+		android:id="@android:id/list"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@+id/btnGenerateLotteryTickets"
+		android:layout_marginLeft="10dp"
+		android:layout_marginRight="10dp"
+		android:layout_marginTop="10dp"
+		android:layout_marginBottom="10dp" />
+
+
+
+
+
+</RelativeLayout>

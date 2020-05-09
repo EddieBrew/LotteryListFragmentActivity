@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id = "@+id/myMenu"
+	tools:context="com.example.superlottopicker">
+
+
+	<item
+		android:id="@+id/menu_generateLottoNumbers"
+		android:title="@string/generate_lotto_numbers"
+		android:orderInCategory="100"
+		android:visible="true"/>
+
+	<item
+		android:id="@+id/menu_pastLottoNumbers"
+		android:title="@string/past_numbers"
+		android:orderInCategory="102"
+		android:visible="true"
+		app:showAsAction="never" />
+
+	<item
+		android:id="@+id/menu_numberQuery"
+		android:orderInCategory="104"
+		android:title="@string/frequency_numbers"
+		android:visible="true" />
+
+
+
+
+</menu>

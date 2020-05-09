@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="70dp"
+	android:background="@drawable/lottoimage"
+	android:id="@+id/frequency_listView">
+
+
+	<TextView
+		android:id="@+id/txtViewNumber"
+		android:layout_width="35dp"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="10dp"
+		android:layout_marginTop="10dp"
+		android:background="@drawable/circlentext"
+		android:text="00"
+		android:textColor ="@color/White"
+		android:textAlignment="center"
+		android:textSize="30sp" />
+
+	<TextView
+		android:id="@+id/txtViewFrequency"
+		android:layout_width="35dp"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="200dp"
+		android:layout_marginTop="10dp"
+		android:layout_toRightOf="@id/txtViewNumber"
+		android:background="@drawable/circlentext"
+		android:text="00"
+		android:textColor ="@color/White"
+		android:textAlignment="center"
+		android:textSize="30sp" />
+
+	<TextView
+		android:id="@+id/txtViewTimes"
+		android:layout_width="35dp"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="1dp"
+		android:layout_marginTop="10dp"
+		android:layout_toRightOf="@id/txtViewFrequency"
+		android:text="X"
+		android:textColor ="@color/Black"
+		android:textAlignment="center"
+		android:textSize="30sp" />
+
+</RelativeLayout>

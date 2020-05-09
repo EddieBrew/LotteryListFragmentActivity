@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/lottery_custom_listView"
+	android:layout_width="match_parent"
+	android:layout_height="100dp"
+	android:background="@drawable/lottoimage"
+	android:padding="10dp">
+
+	<TextView
+		android:id="@+id/txtViewDate"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center"
+		android:text=""
+		android:textSize="20sp"
+		android:textStyle="bold" />
+
+	<TextView
+		android:id="@+id/num1"
+		android:layout_width="35dp"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/txtViewDate"
+		android:layout_marginStart="5dp"
+		android:layout_marginTop="10dp"
+		android:background="@drawable/circlentext"
+		android:text="00"
+		android:textAlignment="center"
+		android:textColor="@color/White"
+		android:textSize="30sp" />
+
+	<TextView
+		android:id="@+id/num2"
+		android:layout_width="35dp"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/txtViewDate"
+		android:layout_marginStart="15dp"
+		android:layout_marginTop="10dp"
+		android:layout_toRightOf="@id/num1"
+		android:background="@drawable/circlentext"
+		android:text="00"
+		android:textAlignment="center"
+		android:textColor="@color/White"
+		android:textSize="30sp" />
+
+
+	<TextView
+		android:id="@+id/num3"
+		android:layout_width="35dp"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/txtViewDate"
+		android:layout_marginStart="15dp"
+		android:layout_marginTop="10dp"
+		android:layout_toRightOf="@id/num2"
+		android:background="@drawable/circlentext"
+		android:text="00"
+		android:textAlignment="center"
+		android:textColor="@color/White"
+		android:textSize="30sp" />
+
+
+	<TextView
+		android:id="@+id/num4"
+		android:layout_width="35dp"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/txtViewDate"
+		android:layout_marginStart="15dp"
+		android:layout_marginTop="10dp"
+		android:layout_toRightOf="@id/num3"
+		android:background="@drawable/circlentext"
+		android:text="00"
+		android:textAlignment="center"
+		android:textColor="@color/White"
+		android:textSize="30sp" />
+
+	<TextView
+		android:id="@+id/num5"
+		android:layout_width="35dp"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/txtViewDate"
+		android:layout_marginStart="15dp"
+		android:layout_marginTop="10dp"
+		android:layout_toRightOf="@id/num4"
+		android:background="@drawable/circlentext"
+		android:text="00"
+		android:textAlignment="center"
+		android:textColor="@color/White"
+		android:textSize="30sp" />
+
+	<TextView
+		android:id="@+id/numMega"
+		android:layout_width="35dp"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/txtViewDate"
+		android:layout_marginStart="20dp"
+		android:layout_marginTop="10dp"
+		android:layout_toRightOf="@id/num5"
+		android:background="@drawable/circlentextblue"
+		android:text="00"
+		android:textAlignment="center"
+		android:textColor="@color/White"
+		android:textSize="30sp" />
+
+
+</RelativeLayout>

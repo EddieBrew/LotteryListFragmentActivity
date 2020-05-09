@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".myFragments.FrequencyFragment">
+
+	<!-- TODO: Update blank fragment layout -->
+
+	<CheckBox
+		android:id="@+id/chbxTypeOfNumbers"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="10dp"
+		android:layout_marginTop="10dp"
+		android:layout_marginRight="10dp"
+		android:background="@color/Aqua"
+		android:checked="false"
+		android:clickable="true"
+		android:text="@string/check_for_Mega"
+		android:textSize="20sp" />
+	<ListView
+		android:id="@android:id/list"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/chbxTypeOfNumbers"
+		android:layout_marginStart="10dp"
+		android:layout_marginTop="10dp"
+		android:layout_marginEnd="10dp"
+		android:layout_marginBottom="10dp"
+		android:background="@color/White"
+		android:backgroundTintMode="screen"
+		android:dividerHeight="10sp"
+		android:elevation="10dp"
+		android:paddingTop="5dp"
+		android:paddingBottom="5dp" />
+
+</RelativeLayout>

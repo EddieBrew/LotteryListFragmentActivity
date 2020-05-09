@@ -1,0 +1,21 @@
+<resources>
+	<string name="app_name">LotteryListFragmentActivity</string>
+
+	<!-- TODO: Remove or change this placeholder text -->
+	<string name="hello_blank_fragment">Hello blank fragment</string>
+	<string name="appTitle">Lottery Number Generator</string>
+	<string name="title_activity_generator">Lotto Number Generator </string>
+	<string name="prompt_email">Email</string>
+	<string name="prompt_password">Password</string>
+	<string name="action_sign_in">Sign in or register</string>
+	<string name="action_sign_in_short">Sign in</string>
+	<string name="home">Past Number Generator</string>
+	<string name="minMax">Enter min,max ranges for lotto and mega numbers( ex. 5,10,4,10)</string>
+	<string name="generate_lotto_numbers"> Generate Lotto Number</string>
+	<string name="past_numbers">Past Lotto Number</string>
+	<string name="frequency_numbers">Frequency of Numbers</string>
+	<string name="title_activity_past_lottery_numbers">PastLotteryNumbersActivity</string>
+	<string name="title_activity_menu">MenuActivity</string>
+	<string name="lotto_number_frequency">LOTTO NUMBER FREQUENCY</string>
+	<string name="check_for_Mega">Check to retrieve mega numbers</string>
+</resources>
