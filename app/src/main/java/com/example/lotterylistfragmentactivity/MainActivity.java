@@ -6,11 +6,8 @@ package com.example.lotterylistfragmentactivity;
 		Created by Robert Brewer on 5/9/2020.
 
 		The LotteryListFragmentActivity app  generates the California Lottery Super Lotto numbers.
-		The app uses the California State Lottery  and Mega numbers, up to the number 47 and 27
-		respectively. The app retrieves the past 52 using webscraping methods with the help of
-		Volley and Jsoup libraries and  and stores the values. The apps stores previous lotto
-		numbers, in a Hashmap key-value pair, where the key is the number and
-		the value is the number of times the number has been drawn.
+		The app retrieves the past 52 weeks drawings using webscraping methods with the help of
+		Volley and Jsoup libraries and  and stores the values.
 
 
 		The apps consists of one activity using 3 fragments that assists the user in generating
@@ -18,7 +15,7 @@ package com.example.lotterylistfragmentactivity;
 
 	    GeneratorFragment: Allows the user to input the min and max frequency ranges the lotto
                            and mega  numbers have been drawn, and from that pool of number, ten(10)
-                           lottery ticket quick picts are generated and displayed on the UI
+                           lottery quick picks are generated and displayed on the UI
 
 	    PastLottoNumbers: Display the past 52 week drawn lottery numbers
 
