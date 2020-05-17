@@ -25,7 +25,7 @@ public class CustomMenuActivity extends AppCompatActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater mMenuInflater = getMenuInflater();
 		mMenuInflater.inflate(R.menu.menu_activity, menu);
-		changeActionBarTitle("PAST LOTTO NUMBERS");
+		changeActionBarTitle("LOTTO NUMBER GENERATOR");
 		return true;
 	}
 

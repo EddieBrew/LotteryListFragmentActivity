@@ -69,11 +69,10 @@ public class MainActivity extends CustomMenuActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
 		try {
 			sendRequestAndPrintResponse();
 			Thread.sleep(1000);
-			Log.i("SIZE OF LIST", String.valueOf(lottoNumbersPastDrawings.size()));
+			//Log.i("SIZE OF LIST", String.valueOf(lottoNumbersPastDrawings.size()));
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -91,6 +90,7 @@ public class MainActivity extends CustomMenuActivity {
 						.addToBackStack(null)
 						.commit();
 			}
+
 
 	}
 
