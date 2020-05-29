@@ -9,7 +9,7 @@ Initial Release
 
 
    The apps consists of one activity using 3 fragments that assists the user in generating
-    quickpick lottery numbers:
+    quick pick lottery numbers:
 
     GeneratorFragment: Allows the user to input the min and max frequency ranges the lotto
 		   and mega  numbers have been drawn, and from that pool of number, ten(10)
