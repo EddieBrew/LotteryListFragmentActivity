@@ -15,6 +15,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+import com.example.lotterylistfragmentactivity.MainActivity;
 import com.example.lotterylistfragmentactivity.R;
 import com.example.lotterylistfragmentactivity.adapters.LottoArrayAdapter;
 import com.example.lotterylistfragmentactivity.data.LotteryNumbersHolder;
@@ -24,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import static com.example.lotterylistfragmentactivity.MainActivity.getDatabaseContent;
 import static com.example.lotterylistfragmentactivity.myFragments.FrequencyFragment.upDateHashTable;
 
 /**
@@ -53,18 +56,13 @@ public class GeneratorFragment extends ListFragment {
 	/**
 	 * Use this factory method to create a new instance of
 	 * this fragment using the provided parameters.
-	 *
 	 * @param param1 Parameter 1.
 	 * @param param2 Parameter 2.
 	 * @return A new instance of fragment BlankFragment.
 	 */
 	// TODO: Rename and change types and number of parameters
-	public static GeneratorFragment newInstance(List<LotteryNumbersHolder> param1, String  param2) {
+	public static GeneratorFragment newInstance(String param1, String param2) {
 		GeneratorFragment fragment = new GeneratorFragment();
-		Bundle bundle = new Bundle();
-		bundle.putParcelableArrayList("lottoNumbers", (ArrayList<? extends Parcelable>) param1);
-		fragment.setArguments(bundle);
-
 		return fragment;
 	}
 
@@ -72,7 +70,7 @@ public class GeneratorFragment extends ListFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		myList = getArguments().getParcelableArrayList("lottoNumbers");;
+		myList = MainActivity.getDatabaseContent();
 	}
 
 	@Override
@@ -133,7 +131,6 @@ public class GeneratorFragment extends ListFragment {
 	 * **********************************************************************************/
 	public List<Integer> getListForNumbers(List<LotteryNumbersHolder> list, Integer number, String minMax) {
 
-		Log.i(TAG, String.valueOf(list.size()));
 
 		//creates a HashMap where the keys are numbers between the lotto (1-47) and mega number(1-27) ranges. The values are initialized to
 		// zero and will be incremented to reflect the number of times the key number have been
@@ -257,23 +254,31 @@ public class GeneratorFragment extends ListFragment {
 	 * @post
 	 **********************************************************************************/
 	public LotteryNumbersHolder generateLotteryNumbers(List<Integer> myLottoList, List<Integer> myMegaList){
-		//Log.i("MyNumbers4: " ,  myLottoList.size() + "------" + myMegaList.size());
-		//Log.i("MyNumbers4: " ,  "Entering method");
-		Random rand = new Random();
+
+
+		//rand is used to determined the list index to extract the integer values from myLottoList and myMegaList ,
+		// to filthat will be used to select the number
+		// i.e myLottoList has 13 items and rand will generate a number(newNum) between 0 and 12  and then
+		//will use that number as the index(myLottoList.get(newNum))  to select the randow
+		// lottey number and place it a new list
+		Random rand = new Random(); //
 		int[] lotteryNumbers = new int[5];
 		int loopIterator = 100;//the algorithm generates the numbers after the 100 loop
 		int minNum = 1; //
 		int maxLottoNum = myLottoList.size() -1;
 		int maxMegaNum = myMegaList.size() - 1;
-		int num = 5;
+		int num = 5; //total number of daily regular lottery numbers
 
 
 		try {
 			for(int i = 0; i < loopIterator; i++) {
 
-
 				int index = 0;
 				while (index < num) {
+					//rand is used to determined the list index, that will be used to select the number
+					// from myLottoList and myMegaList i.e myLottoList has 13 items and rand will generate a number(newNum) between 0 and 12  and then
+					//will use that number as the index(myLottoList.get(newNum))  to select the randow
+					// lottey number and place it a new list
 					int newNum = rand.nextInt((maxLottoNum - minNum) + 1) + minNum;
 					if (index == 0) {
 						lotteryNumbers[index] = myLottoList.get(newNum);
@@ -293,11 +298,6 @@ public class GeneratorFragment extends ListFragment {
 		}catch(Exception e){
 			// Log.i( "ERROR10000", e.toString());
 		}
-
-
-
-
-
 
 
 		StringBuilder lottoString = new StringBuilder();

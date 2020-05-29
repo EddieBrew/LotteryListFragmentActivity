@@ -26,6 +26,11 @@
 		android:visible="true" />
 
 
+	<item
+		android:id="@+id/menu_uploadToServer"
+		android:orderInCategory="106"
+		android:title="@string/upload_lotto_numbers_to_server"
+		android:visible="true" />
 
 
 </menu>

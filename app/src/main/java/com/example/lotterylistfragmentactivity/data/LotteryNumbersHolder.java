@@ -6,6 +6,7 @@ import android.os.Parcelable;
 public class LotteryNumbersHolder implements Parcelable {
 
 	private Integer NUMBER = 5;
+	//private Integer dateInteger;
 	private String date;
 	private Integer num[];
 	private Integer megaNumber;
@@ -14,6 +15,7 @@ public class LotteryNumbersHolder implements Parcelable {
 	public LotteryNumbersHolder(String date, String numberString){
 		num = new Integer[NUMBER];
 		this.date = date;
+		//this.dateInteger = convertDateStringToInt(date);
 		parseStringToGetNumbers(numberString);
 
 	}
@@ -33,6 +35,13 @@ public class LotteryNumbersHolder implements Parcelable {
 			megaNumber = in.readInt();
 		}
 
+/*
+		if (in.readByte() == 0) {
+			dateInteger = null;
+		} else {
+			dateInteger = in.readInt();
+		}
+*/
 		Object[] object = in.readArray(null);
 		num = new Integer[object.length];
 		for( int i = 0; i < object.length; i++){
@@ -56,6 +65,7 @@ public class LotteryNumbersHolder implements Parcelable {
 	public Integer getLottoNumbers(int index){return num[index];}
 	public String getDate(){return date;}
 	public Integer getNUMBER(){return NUMBER;}
+	//public Integer getDateInteger(){return dateInteger;}
 
 	private void parseStringToGetNumbers(String numberString){
 
@@ -72,6 +82,20 @@ public class LotteryNumbersHolder implements Parcelable {
 			}
 		}
 	}
+
+	/*********************************************************************************
+	 *  convertDateStringToInt() converts a date in String format to an integer value t
+	 * @pre none
+	 * @parameter String
+	 * @post returns int reprentation of the date
+	 **********************************************************************************/
+	private  Integer convertDateStringToInt(String dateString) {
+		String delimStr = "";  //date format is mm/dd/yyyy
+		String[] words = dateString.split(delimStr);
+
+		return ((Integer.parseInt(words[0]) * 100) + (Integer.parseInt(words[1])) +
+				Integer.parseInt(words[2]) * 10000);
+	} //end method
 
 
 	@Override
@@ -94,7 +118,16 @@ public class LotteryNumbersHolder implements Parcelable {
 			dest.writeByte((byte) 1);
 			dest.writeInt(megaNumber);
 		}
-
+        /*
+		if(dateInteger == null){
+			dest.writeByte((byte) 0);
+		}else{
+			dest.writeByte((byte) 1);
+			dest.writeInt(dateInteger);
+		}
+*/
 		dest.writeArray(num);
 	}
+
+
 }

@@ -18,4 +18,5 @@
 	<string name="title_activity_menu">MenuActivity</string>
 	<string name="lotto_number_frequency">LOTTO NUMBER FREQUENCY</string>
 	<string name="check_for_Mega">Check to retrieve mega numbers</string>
+	<string name="upload_lotto_numbers_to_server">upload_lotto_numbers_to_server</string>
 </resources>
