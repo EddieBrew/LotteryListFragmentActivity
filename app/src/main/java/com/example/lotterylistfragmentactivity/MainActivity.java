@@ -6,8 +6,9 @@ package com.example.lotterylistfragmentactivity;
 		Created by Robert Brewer on 5/9/2020.
 
 		The LotteryListFragmentActivity app  generates the California Lottery Super Lotto numbers.
-		The app retrieves the past 52 weeks drawings using webscraping methods with the help of
-		Volley and Jsoup libraries and  and stores the values.
+		The app retrieves the bi-weekly lottery drawings using webscraping methods with the help of
+		Volley and Jsoup libraries and  and stores the values. The lotto numbers are stored im a
+		local database and on the server.
 
 
 		The apps consists of one activity using 3 fragments that assists the user in generating
@@ -17,7 +18,7 @@ package com.example.lotterylistfragmentactivity;
                            and mega  numbers have been drawn, and from that pool of number, ten(10)
                            lottery quick picks are generated and displayed on the UI
 
-	    PastLottoNumbers: Display the past 52 week drawn lottery numbers
+	    PastLottoNumbers: Display the past lottery numbers, stored in the database
 
 	    FrequencyFragment: Display the number of time each SuperLotto and Mega numbers have been
 	                       drawn the past 52 weeks.
@@ -29,6 +30,7 @@ package com.example.lotterylistfragmentactivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -42,6 +44,11 @@ import com.android.volley.toolbox.Volley;
 import com.example.lotterylistfragmentactivity.data.LotteryNumbersHolder;
 import com.example.lotterylistfragmentactivity.myFragments.GeneratorFragment;
 import com.example.lotterylistfragmentactivity.myFragments.PastLottoNumbersFragment;
+import com.parse.Parse;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -51,62 +58,99 @@ import static java.lang.Thread.sleep;
 import static org.jsoup.Jsoup.parse;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import static org.jsoup.Jsoup.parse;
 
 public class MainActivity extends CustomMenuActivity {
-    public static   List<LotteryNumbersHolder> lottoNumbersPastDrawings = new ArrayList<>();;
-	private RequestQueue mRequestQueue; //requestqueue varaiable from Vollei library
-	private StringRequest stringRequest;   //the variable type of the requestqueue
+	public static final String TAG = "MainActivity";
+	static  ParseUser user;
+	public static   List<LotteryNumbersHolder> lottoList = new ArrayList<>();;
 	FragmentManager fm;
 	Fragment fragment;
-	Bundle args;
+	private RequestQueue mRequestQueue; //requestqueue varaiable from Vollei library
+	private StringRequest stringRequest;   //the variable type of the requestqueue
+	static String iD;
+	static String key;
+	static String server;
+	static String add1;
+	static String add2;
+	public static MyLotteryDatabase myDatabase;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		InputStream is = null;
 		try {
-			sendRequestAndPrintResponse();
-			Thread.sleep(1000);
-			//Log.i("SIZE OF LIST", String.valueOf(lottoNumbersPastDrawings.size()));
-		} catch (InterruptedException e) {
+			is = getApplicationContext().getAssets().open("mysignonstuff.txt");
+			int ch;
+			StringBuilder sb = new StringBuilder();
+			while((ch = is.read()) != -1) {//reads inputstream chars into a stringbuilder object
+				sb.append((char) ch);
+			}
+			String dataString = sb.toString(); // converts strinbuilderobject to a string
+			final String DELIMITER = "#";
+			String[] getMeIn = dataString.split(DELIMITER); // splits the files details into
+			iD = getMeIn[0];
+			key  = getMeIn[1];
+			server = getMeIn[2];
+			add1 = getMeIn[3];
+			add2 = getMeIn[4];
+
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
+		if((myDatabase == null) ){ //instantiate database when app is initially imstalled
+			myDatabase = new  MyLotteryDatabase(this);
+		}
 
+		if(myDatabase.numberOfRows() == 0){ //downloads previous lottonnumbers from server when app
+			                                //is initially installed
+			try {
+				downloadFromServer();
+				sleep(2000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
+		checkForNewLottoNumbers(); //retrieves lotto numbers from webpage and add new drawing to the
+		                          //to the database and server
+
+		//Instantiate default Generator Fragment on app startup
 		fm = this.getSupportFragmentManager();
 		fragment = fm.findFragmentById(R.id.fragment);
-
-
 			if(fragment == null){
-				fragment = GeneratorFragment.newInstance(lottoNumbersPastDrawings, null);
-				//fragment.setArguments(args);
+				fragment =  new GeneratorFragment();
 				fm.beginTransaction()
 						.add(R.id.myContainer, fragment)
 						.addToBackStack(null)
 						.commit();
 			}
 
-
+		Toast.makeText(this, "Total database entries are "+ myDatabase.numberOfRows(), Toast.LENGTH_LONG).show();
 	}
 
 
+
+
 	/*********************************************************************************
-	 *  sendRequestAndPrintResponse() is the main function that produces the lottery numbers by
+	 *  checkForNewLottoNumbers() is the main function that produces the lottery numbers by
 	 *  abstracting the data from the network using Volley for networking and Jsoup for webscraping.
-	 *  Upon analazing the the 52 weeks of the CA State Lottery drawings, lotto and mega numbers
-	 *  are populated into the UI
+	 *  The drawing datesare compared to the database dates. If the drawing dates are not found in the database,
+	 *  the date and numbers are added to the database and the server.
 	 *
 	 * @pre none
 	 * @parameter none
 	 * @post Populates the UI lottery number displays
 	 **********************************************************************************/
-	private void sendRequestAndPrintResponse(){
-        final String TAG = "sendRequest()";
+	private void checkForNewLottoNumbers() {
+
+		final String TAG = "sendRequest()";
 		String website = "https://www.lotteryusa.com/california/super-lotto-plus/year";
 		mRequestQueue = Volley.newRequestQueue(this); //used for simple queue requests
 		stringRequest = new StringRequest(Request.Method.GET, website, new Response.Listener<String>() {
@@ -124,8 +168,9 @@ public class MainActivity extends CustomMenuActivity {
 		});
 
 		mRequestQueue.add(stringRequest);
-
 	}
+
+
 	/*********************************************************************************
 	 *  produceLottoNMegaNumbers() produced a list containing LotteryNumberHolder objects.
 	 *  The LotteryHolderNumber class contains the daily drawings of the CA SuperLotto
@@ -148,9 +193,6 @@ public class MainActivity extends CustomMenuActivity {
 	}
 
 
-
-
-
 	/*********************************************************************************
 	 *  parseHTMLPage() parses the CA Lottery HTML website data and extract the daily lotto numbers
 	 *                  and populates a List with the lotto numbers
@@ -158,15 +200,14 @@ public class MainActivity extends CustomMenuActivity {
 	 * @pre String response: the HTML transmitted data received from the CA Lottery webpagepage.
 	 *
 	 * @parameter none
-	 * @post List<LotteryNumberHolder> updates global variable "lottoNumberList" which holds the daily
-	 *                                  lottoe numbers for the last 52 weeks
+	 * @post  adds new entries into the database and server
+	 *
 	 **********************************************************************************/
 
 	private void parseHTMLPage(final String response) throws IOException {
 		final String TAG = "parseHTMLPage";
 		if (response == "") ;
 		Document doc = parse(response);
-		//ist<LotteryNumbersHolder> myDailyLotto = new ArrayList<>();
 		try {
 			List<String> lottoDrawingDates = new ArrayList<>(); //holds the lotto drawing dates
 			Elements lotteryDatesInfo = doc.select("time");
@@ -187,219 +228,144 @@ public class MainActivity extends CustomMenuActivity {
 							String lotteryNumber = number.text();
 							lottoNumbers += lotteryNumber + ", ";
 						}
-						//Log.i( "NUMBERS", lottoNumbers);
+
 						//Number format when scraped from website--: 5, 10, 6, 8, 34, MN: 33,
 						String updatedLottoNumbers = lottoNumbers.replace("MN: ", "");////removes mega Number designator (MN: ) from lotto number string
 						String updatedLottoNumbers1 = updatedLottoNumbers.replace (",", ""); //removes the comma separator from the numbers string
-
 						weeklyLottoNumbers.add(updatedLottoNumbers1);
 					}
 				}
 			}
-
 			for (int i = 0; i < weeklyLottoNumbers.size(); i++) {
-				//Log.i( "NUMBERS", lottoDrawingDates.get(i + 1) + " ----- " + weeklyLottoNumbers.get(i));
-				lottoNumbersPastDrawings.add(new LotteryNumbersHolder(lottoDrawingDates.get(i + 1), weeklyLottoNumbers.get(i)));
+				if (! myDatabase.checkForDuplicateDate(lottoDrawingDates.get(i + 1))) { //checks to see if the lottery drawing date is already in the database
+					myDatabase.insertLotteryNumbers(new LotteryNumbersHolder(lottoDrawingDates.get(i + 1), weeklyLottoNumbers.get(i)));//insert drwaing into local database
+					addToServer(new LotteryNumbersHolder(lottoDrawingDates.get(i + 1), weeklyLottoNumbers.get(i))); //adds drawing to server
+				}
 			}
-			Log.i(TAG, String.valueOf(lottoNumbersPastDrawings.size()));
-
-			//Thread.sleep(5000);
 		} catch (Exception e) {
 			e.printStackTrace();
-
 		}
-
-
-
-
-
-
-	}
-
-	/*********************************************************************************
-	 *  getListForNumbers() populates a list that will hold the lotto and mega numbers, within the
-	 *  user defined min,max frequency in which the number has been drawn.
-	 *
-	 * @pre none
-	 * @parameter List<LotteryNumberHolder>  list : contains the past 52 weeks daily drwan lottry numbers
-	 *             Integer number: determines whether the regular lotto numbers(5) or mega number(1)
-	 *                              will be generated
-	 *             String minMax: a string containing the user defined min and max frequency that will
-	 *                            be used to vreate a list of numbers used to generate the new
-	 *                            lottery tickets
-	 *
-	 * @post List<Integer> a list containing the the past lottery numbers occurances during the past
-	 *                     52 weeks
-	 * **********************************************************************************/
-	public List<Integer> getListForNumbers(List<LotteryNumbersHolder> list, Integer number,  String minMax) {
-
-		//creates a HashMap where the keys are numbers between the lotto (1-47) and mega number(1-27) ranges. The values are initialized to
-		// zero and will be incremented to reflect the number of times the key number have been
-		// drawn in the lottery( key = lottery number, value = # of times number has beeen drawn)
-		HashMap<Integer, Integer> myHashLotteryNumbers = new HashMap<>();
-		for (int i = 1; i < number +1; i++) { //number is the max numbers that can be selected for lotto (47) and mega (27) numbers
-			myHashLotteryNumbers.put(i, 0);
-		}
-
-		List<Integer> popularLotteryNumbers = new ArrayList<>();
-		//Integer minRange = null;//minimun number of times a number has been selected
-		//Integer maxRange = null;////maximun number of times a number has been selected
-
-		try {
-			String minNMaxValues[] = minMax.split(",");
-			Integer minRangeForLotto = Integer.parseInt(minNMaxValues[0]);
-			Integer maxRangeForLotto = Integer.parseInt(minNMaxValues[1]);
-			Integer minRangeForMega = Integer.parseInt(minNMaxValues[2]);
-			Integer maxRangeForMega = Integer.parseInt(minNMaxValues[3]);
-			final int TOTAL_NUMBERS = 5;
-			Boolean minNumberRequiredInPool = false;
-
-			switch(number) {
-				case 27:  //selects Mega number.
-					//Integer megaMin = 5; // pre-defined min occurrence that the mega number has been drawn
-					final Integer megaMax = 10;//
-					for (int j = 0; j < list.size(); j++) {//pre-defined min occurrence that the mega number has been drawn
-						upDateHashTable(myHashLotteryNumbers, list.get(j).getMegaNumber());
-					}
-					printHashMap(" HASH MEGA NUMBERS: :", myHashLotteryNumbers);
-					while (!minNumberRequiredInPool) {
-						//printHashMapUsingLoop(" HASH MEGA NUMBERS: :", myHashLotteryNumbers);
-						popularLotteryNumbers = getCommonLotteryNumbers(myHashLotteryNumbers, minRangeForMega, maxRangeForMega);
-						if (popularLotteryNumbers.size() < 5) {// Adjusts the min Range if the popularLotteryNumberlist is less than the five numbers
-							//required to make up the five lottery number.
-							minRangeForMega--;
-							minNumberRequiredInPool = false;
-						} else {
-							minNumberRequiredInPool = true;
-						}
-					}
-					//Log.i("MLOTTERYNUMBERS = ", String.valueOf(popularLotteryNumbers.size()));
-					break;
-
-				case 47: //selects regular lotto numbers
-					for (int j = 0; j < list.size(); j++) {
-						for (int k = 0; k < TOTAL_NUMBERS; k++) {
-							upDateHashTable(myHashLotteryNumbers, list.get(j).getLottoNumbers(k));
-						}
-					}
-					//printHashMapUsingLoop("LottoNumbers", myHashLotteryNumbers);
-					while (!minNumberRequiredInPool) { // Adjusts the min Range if the popularLotteryNumberlist is less than the five numbers
-						//required to make up the five lottery number.
-						//printHashMapUsingLoop("HASH LOTTO NUMBERS: :", myHashLotteryNumbers);
-						popularLotteryNumbers = getCommonLotteryNumbers(myHashLotteryNumbers, minRangeForLotto, maxRangeForLotto);
-						if (popularLotteryNumbers.size() <= 5) {
-							minRangeForLotto--;
-							if (minRangeForLotto < 0) {// Adjusts the max Range if the min range is already at 0
-								minRangeForLotto = 0;
-								maxRangeForLotto++;
-								//Log.i("POPULARLOTTERYNUMBERS = ", String.valueOf(popularLotteryNumbers.size()));
-								minNumberRequiredInPool = false;
-							}
-						} else {
-							//Log.i("POPULARLOTTERYNUMBERS = ", String.valueOf(popularLotteryNumbers.size()));
-							minNumberRequiredInPool = true;
-						}
-					}
-					break;
-				default:
-			}
-
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-			Toast.makeText(this, "Min,Max INPUT ERROR: Verify min,max input( for ex. 5,10)", Toast.LENGTH_LONG).show();
-		}
-		//Log.i("POPULARLOTTERYNUMBERS = ", String.valueOf(popularLotteryNumbers.size()));
-		return popularLotteryNumbers;
-
-
 	}
 
 
+
+
 	/*********************************************************************************
-	 *  updateHashTable() updates the hashmap by incrementing the number of times the lottery
-	 *  number(key) has been drawn in previous lottery drawings
+	 *  getDatabaseContent() retrieves the content from the local SQLite database
+	 *  and returns the content in a List object
 	 *
 	 * @pre none
-	 * @parameter HashMap myHashLotteryNumbers, Integer key
-	 * @post
+	 * @parameter none
+	 * @post returns an ArrayList object of the database content
 	 **********************************************************************************/
-	static void upDateHashTable(HashMap<Integer, Integer> myHashLotteryNumbers, Integer key) {
 
-		if (myHashLotteryNumbers.containsKey(key)) {
+	public static List<LotteryNumbersHolder> getDatabaseContent(){
+		List<LotteryNumbersHolder> list = new ArrayList<>();
+		Cursor res = myDatabase.getAllLotteryNumbers();
+		while (res.moveToNext()) {//retrieves lotto info from the database and populates the
+			//list which is used to display lottery numbers
+			String dateString = res.getString(1);
+			StringBuffer buffer = new StringBuffer();
+			buffer.append(res.getInt(2)+" ");
+			buffer.append(res.getInt(3)+" ");
+			buffer.append(res.getInt(4)+" ");
+			buffer.append(res.getInt(5)+" ");
+			buffer.append(res.getInt(6)+" ");
+			buffer.append(res.getInt(7));
 
-			Integer oldValue = myHashLotteryNumbers.get(key);
-			oldValue++; //increments the hash key values
-
-			myHashLotteryNumbers.put(key, oldValue);
+			list.add(new LotteryNumbersHolder(dateString, buffer.toString()));
 		}
+		return list;
 	}
 
 
 	/*********************************************************************************
-	 *  getCommonLotteryNumbers() searched the HashMap and search for values
-	 *  between the user defined min,max values. The method returns a list key integers(i.e. lottery numbers)
-	 *
-	 *
+	 *  convertDateStringToInt() converts a date, in String format,  to an integer value
 	 * @pre none
-	 * @parameter HashMap<Integer, Integer> myHashLotteryNumbers
-	 * @post List<Integer> : list of lottery numbers within the specified min,max ranges
+	 * @parameter String
+	 * @post returns int reprentation of the date
 	 **********************************************************************************/
-	private List<Integer> getCommonLotteryNumbers(HashMap<Integer, Integer> myHashLotteryNumbers, Integer minRange, Integer maxRange) {
+	public static  int convertDateStringToInt(String dateStringWhole) {
 
-		List<Integer> commonNumbers = new ArrayList<>();
-		int totalItems = myHashLotteryNumbers.size() + 1;//offset by 1 to include the last key
+		//dateStringWhole format is for example   Wed, May 2, 2020
+		String delimStr = " ";
 
-		int listIndex = 1;
+		//Parses the dateStringWhole variable
+		String[] dateParsed = dateStringWhole.split(delimStr);
+		int month =  getMonthInt(dateParsed[1]);
+		int day = Integer.parseInt(dateParsed[2].replace(",", ""));
+		int year  = Integer.parseInt(dateParsed[3]);
 
-		while (listIndex < totalItems) {
 
-			// since HashMap minimum key is 1, list is offset to represent the first item in map
-			if (myHashLotteryNumbers.containsKey(listIndex)) {
+		// new date format is mm/dd/yyyy
+		return  ((month * 100) + (day) +(year * 10000));
 
-				if (myHashLotteryNumbers.get(listIndex) >= minRange && myHashLotteryNumbers.get(listIndex) <= maxRange) {
-					commonNumbers.add(listIndex);
+	} //end method
+
+	/*********************************************************************************
+	 *  getMonthInt() Converts the month into an integer represntation.
+	 * @pre none
+	 * @parameter String moth
+	 * @post returns an integer representation og the month
+	 **********************************************************************************/
+	private static int getMonthInt(String month){
+
+		switch(month){
+			case "Jan" : return 1;
+			case "Feb" : return 2;
+			case "Mar" : return 3;
+			case "Apr" : return 4;
+			case "May" : return 5;
+			case "Jun" : return 6;
+			case "Jul" : return 7;
+			case "Aug" : return 8;
+			case "Sep" : return 9;
+			case "Oct" : return 10;
+			case "Nov" : return 11;
+			case "Dec" : return 12;
+			default:
+		}
+		return 0;
+	}
+
+
+	/*********************************************************************************
+	 *  addToServer() adds the new lottery drawings into the Parse Server
+	 * @pre none
+	 * @parameter LotteryNumbersHolder data
+	 * @post Displays a Tosat message indicating wheyher successful or not
+	 **********************************************************************************/
+	public void addToServer(LotteryNumbersHolder data) {
+
+		Parse.enableLocalDatastore(this);
+		Parse.initialize(new Parse.Configuration.Builder(this)
+				.applicationId(iD)
+				.clientKey(key)
+				.server(server)
+				.build()
+		);
+
+		ParseObject object = new ParseObject("LotteryNumbers");
+		object.put("DateInteger", MainActivity.convertDateStringToInt(data.getDate()));
+		object.put("Username", "rbrewer");
+		object.put("DATE", data.getDate());
+		object.put("NUM1", data.getLottoNumbers(0));
+		object.put("NUM2", data.getLottoNumbers(1));
+		object.put("NUM3", data.getLottoNumbers(2));
+		object.put("NUM4", data.getLottoNumbers(3));
+		object.put("NUM5", data.getLottoNumbers(4));
+		object.put("MEGA", data.getMegaNumber());
+		object.saveInBackground(new SaveCallback() {
+			@Override
+			public void done(ParseException e) {
+				if (e == null) {
+					Toast.makeText(getApplicationContext(), "Successful: Data Sent To Server", Toast.LENGTH_SHORT).show();
+				} else {
+					Toast.makeText(getApplicationContext(), "ERROR: No Data Sent to Server", Toast.LENGTH_SHORT).show();
 				}
-				listIndex++;
 			}
-		}
+		});
 
-		return commonNumbers;
 	}
 
-
-	/*********************************************************************************
-	 *  printHashMap() prints out the hashmap key,value pai, using an iterator to traverse
-	 *  through the hashmap.
-	 * @pre none
-	 * @parameter String title: Designates whther the hash table contains Lotto or Mega number info
-	 *            HashMap<Integer, Integer> myHashLotteryNumbers
-	 * @post none
-	 **********************************************************************************/
-	static void printHashMap(String title,	HashMap<Integer, Integer> map){
-		System.out.println(title + " HASH OUTPUT");
-		Iterator<Integer> itr = map.keySet().iterator();
-		while(itr.hasNext())
-		{
-			Integer key = itr.next();
-			Integer value = map.get(key);
-			System.out.println("HASHMAP: Key = " + key + ", Value = " + value);
-		}
-	}
-
-
-	/*********************************************************************************
-	 *  printHashMapUsingLoop() prints out the hashmap key,value pai, using a For Loop to traverse
-	 *  through the hashmap.
-	 * @pre none
-	 * @parameter String title: Designates whther the hash table contains Lotto or Mega number info
-	 *            HashMap<Integer, Integer> myHashLotteryNumbers
-	 * @post none
-	 **********************************************************************************/
-	private void printHashMapUsingLoop(String title, HashMap<Integer, Integer> map){
-		System.out.println(title + " HASH OUTPUT");
-		for(int i = 1; i < map.size() +1 ; i++){
-			Log.i("HASHMAP:", "Key = " + i + ", Value = " + map.get(i).toString());
-		}
-	}
-
-}
+}//end class

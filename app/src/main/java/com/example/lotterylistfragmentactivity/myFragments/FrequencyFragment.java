@@ -15,6 +15,7 @@ import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.lotterylistfragmentactivity.MainActivity;
 import com.example.lotterylistfragmentactivity.R;
 import com.example.lotterylistfragmentactivity.adapters.LottoFrequencyArrayAdapter;
 import com.example.lotterylistfragmentactivity.data.LotteryNumberFrequency;
@@ -65,18 +66,13 @@ public class FrequencyFragment extends ListFragment {
 	 */
 	// TODO: Rename and change types and number of parameters
 	public static FrequencyFragment newInstance(List<LotteryNumbersHolder> param1, String param2) {
-		FrequencyFragment fragment = new FrequencyFragment();
-		Bundle args = new Bundle();
-		args.putParcelableArrayList("pastLottoNumbers", (ArrayList<? extends Parcelable>) param1);
-		fragment.setArguments(args);
-		return fragment;
+		return new FrequencyFragment();
 	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		myList = new ArrayList<>();
-		myList = getArguments().getParcelableArrayList("pastLottoNumbers");
+		myList = MainActivity.getDatabaseContent();
 	}
 
 	@Override
@@ -123,7 +119,6 @@ public class FrequencyFragment extends ListFragment {
 
 	public  void createList( List<LotteryNumbersHolder> data, Integer num){
 
-
 		HashMap<Integer, Integer>  	table  = getLottoHashTable(data, numSelector);;
 		List<LotteryNumberFrequency> mylottoData = fillLotteyNumberFrequencyClass(table);
 		sortListByDescendingFrequency(mylottoData);
@@ -134,21 +129,14 @@ public class FrequencyFragment extends ListFragment {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-
-
 	}
 
 
 	private static  List<LotteryNumberFrequency>  fillLotteyNumberFrequencyClass(HashMap<Integer, Integer> data){
-
 		List<LotteryNumberFrequency> myData = new ArrayList<>();
-
-		Iterator<Integer> itr = data.keySet().iterator();
-		while(itr.hasNext()){
-			Integer key = itr.next();
+		for (Integer key : data.keySet()) {
 			Integer value = data.get(key);
-			myData.add(new LotteryNumberFrequency(key, value ));
+			myData.add(new LotteryNumberFrequency(key, value));
 		}
 
 		return myData;
@@ -186,7 +174,7 @@ public class FrequencyFragment extends ListFragment {
 					for (int j = 0; j < list.size(); j++) {//pre-defined min occurrence that the mega number has been drawn
 						upDateHashTable(myHashLotteryNumbers, list.get(j).getMegaNumber());
 					}
-					//printHashMap(" HASH MEGA NUMBERS: :", myHashLotteryNumbers);
+					//printHashMap(" HASH LOTTO NUMBERS: :", myHashLotteryNumbers);
 					break;
 
 				case 47: //selects regular lotto numbers
@@ -200,16 +188,15 @@ public class FrequencyFragment extends ListFragment {
 					break;
 				default:
 			}
-
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 			Toast.makeText(getContext(), "Min,Max INPUT ERROR: Verify min,max input( for ex. 5,10)", Toast.LENGTH_LONG).show();
 		}
-		//Log.i("POPULARLOTTERYNUMBERS = ", String.valueOf(popularLotteryNumbers.size()));
+
 		return myHashLotteryNumbers;
-
-
 	}
+
+
 	/*********************************************************************************
 	 *  updateHashTable() updates the hashmap by incrementing the number of times the lottery
 	 *  number(key) has been drawn in previous lottery drawings
@@ -257,8 +244,9 @@ public class FrequencyFragment extends ListFragment {
 				}
 			}
 		}
-
 	}
+
+
 	/*********************************************************************************
 	 *  printHashMap() prints out the hashmap key,value pai, using an iterator to traverse
 	 *  through the hashmap.
@@ -269,10 +257,7 @@ public class FrequencyFragment extends ListFragment {
 	 **********************************************************************************/
 	static void printHashMap(String title,	HashMap<Integer, Integer> map){
 		System.out.println(title + " HASH OUTPUT");
-		Iterator<Integer> itr = map.keySet().iterator();
-		while(itr.hasNext())
-		{
-			Integer key = itr.next();
+		for (Integer key : map.keySet()) {
 			Integer value = map.get(key);
 			System.out.println("HASHMAP: Key = " + key + ", Value = " + value);
 		}
