@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.ListFragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import com.example.lotterylistfragmentactivity.adapters.LottoArrayAdapter;
 import com.example.lotterylistfragmentactivity.data.LotteryNumbersHolder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.example.lotterylistfragmentactivity.CustomMenuActivity.sortListByDescendingDate;
@@ -62,6 +64,9 @@ public class PastLottoNumbersFragment extends ListFragment {
 
 		myList = getDatabaseContent();
 		sortListByDescendingDate(myList);
+		//Log.d(TAG, Arrays.toString(myList.toArray()));
+
+
 	}
 
 	@Override

@@ -3,6 +3,8 @@ package com.example.lotterylistfragmentactivity.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Arrays;
+
 public class LotteryNumbersHolder implements Parcelable {
 
 	private Integer NUMBER = 5;
@@ -118,16 +120,16 @@ public class LotteryNumbersHolder implements Parcelable {
 			dest.writeByte((byte) 1);
 			dest.writeInt(megaNumber);
 		}
-        /*
-		if(dateInteger == null){
-			dest.writeByte((byte) 0);
-		}else{
-			dest.writeByte((byte) 1);
-			dest.writeInt(dateInteger);
-		}
-*/
+
 		dest.writeArray(num);
 	}
 
-
+	@Override
+	public String toString() {
+		return "LotteryNumbersHolder{" +
+				 date  +
+				", " + Arrays.toString(num) +
+				", " + megaNumber +
+				'}' + "\n";
+	}
 }

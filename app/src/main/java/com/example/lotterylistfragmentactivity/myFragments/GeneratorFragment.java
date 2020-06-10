@@ -164,9 +164,13 @@ public class GeneratorFragment extends ListFragment {
 					while (!minNumberRequiredInPool) {
 						//printHashMapUsingLoop(" HASH MEGA NUMBERS: :", myHashLotteryNumbers);
 						popularLotteryNumbers = getCommonLotteryNumbers(myHashLotteryNumbers, minRangeForMega, maxRangeForMega);
-						if (popularLotteryNumbers.size() < 5) {// Adjusts the min Range if the popularLotteryNumberlist is less than the five numbers
+						if (popularLotteryNumbers.size() < 2) {// Adjusts the min Range if the popularLotteryNumberlist is less than the five numbers
 							//required to make up the five lottery number.
-							minRangeForMega--;
+							if(minRangeForMega == 0){
+								maxRangeForMega++;
+							}else{
+								minRangeForMega--;
+							}
 							minNumberRequiredInPool = false;
 						} else {
 							minNumberRequiredInPool = true;
