@@ -72,7 +72,8 @@ public class CustomMenuActivity extends AppCompatActivity {
 						.replace(R.id.myContainer, generatorFragment)
 						.addToBackStack(null)
 						.commit();
-				Toast.makeText(this, "LOTTO NUMBER GENERATOR", Toast.LENGTH_LONG).show();
+				//Toast.makeText(this, "LOTTO NUMBER GENERATOR", Toast.LENGTH_LONG).show();
+				Toast.makeText(this, "Total database entries are "+ myDatabase.numberOfRows(), Toast.LENGTH_LONG).show();
 				return true;
 
 			case (R.id.menu_pastLottoNumbers)://

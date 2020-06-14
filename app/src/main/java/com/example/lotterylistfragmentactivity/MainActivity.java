@@ -118,7 +118,13 @@ public class MainActivity extends CustomMenuActivity {
 			}
 		}
 
-		checkForNewLottoNumbers(); //retrieves lotto numbers from webpage and add new drawing to the
+		try {
+			checkForNewLottoNumbers();
+			sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		; //retrieves lotto numbers from webpage and add new drawing to the
 		                          //to the database and server
 
 		//Instantiate default Generator Fragment on app startup
