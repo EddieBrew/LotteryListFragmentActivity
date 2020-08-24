@@ -2,7 +2,7 @@
 Initial Release
 
 The LotteryListFragmentActivity app  generates the California Lottery Super Lotto numbers.
-The app retrieves the bi-weekly lottery drawings using webscraping methods with the help of
+The app retrieves the weekly lottery drawings using webscraping methods with the help of
 Volley and Jsoup libraries and  and stores the values in the apps local database  and on the server.
 
 
