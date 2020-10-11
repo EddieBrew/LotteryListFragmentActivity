@@ -4,7 +4,12 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:id = "@+id/myMenu"
 	tools:context="com.example.superlottopicker">
-
+	<item
+		android:id="@+id/menu_enabledID"
+		android:icon="@drawable/money"
+		app:showAsAction="ifRoom"
+		android:orderInCategory="0"
+		android:title="@string/enabled_button" />
 
 	<item
 		android:id="@+id/menu_generateLottoNumbers"
@@ -48,4 +53,12 @@
 		android:enabled="false"
 		android:title="@string/delete_all_data_from_server"
 		android:visible="true" />
+
+	<item
+		android:id="@+id/menu_logout"
+		android:orderInCategory="110"
+		android:enabled="true"
+		android:title="Logout"
+		android:visible="true" />
+
 </menu>

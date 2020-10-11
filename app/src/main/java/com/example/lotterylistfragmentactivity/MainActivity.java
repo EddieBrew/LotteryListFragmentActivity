@@ -30,6 +30,7 @@ package com.example.lotterylistfragmentactivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -43,7 +44,6 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.lotterylistfragmentactivity.data.LotteryNumbersHolder;
 import com.example.lotterylistfragmentactivity.myFragments.GeneratorFragment;
-import com.example.lotterylistfragmentactivity.myFragments.PastLottoNumbersFragment;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -70,6 +70,7 @@ public class MainActivity extends CustomMenuActivity {
 	public static   List<LotteryNumbersHolder> lottoList = new ArrayList<>();;
 	FragmentManager fm;
 	Fragment fragment;
+	public static String username;
 	private RequestQueue mRequestQueue; //requestqueue varaiable from Vollei library
 	private StringRequest stringRequest;   //the variable type of the requestqueue
 	static String iD;
@@ -82,16 +83,17 @@ public class MainActivity extends CustomMenuActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+        /*
 		InputStream is = null;
 		try {
-			is = getApplicationContext().getAssets().open("mysignonstuff.txt");
+			is = getApplicationContext().getAssets().open("app/src/main/assets/mysignonstuff.txt");
 			int ch;
 			StringBuilder sb = new StringBuilder();
 			while((ch = is.read()) != -1) {//reads inputstream chars into a stringbuilder object
 				sb.append((char) ch);
 			}
 			String dataString = sb.toString(); // converts strinbuilderobject to a string
+			Log.d(TAG, dataString);
 			final String DELIMITER = "#";
 			String[] getMeIn = dataString.split(DELIMITER); // splits the files details into
 			iD = getMeIn[0];
@@ -103,8 +105,10 @@ public class MainActivity extends CustomMenuActivity {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		if((myDatabase == null) ){ //instantiate database when app is initially imstalled
+*/
+		Intent uName = getIntent();
+		username = uName.getStringExtra("username");
+        if((myDatabase == null) ){ //instantiate database when app is initially imstalled
 			myDatabase = new  MyLotteryDatabase(this);
 		}
 

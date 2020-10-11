@@ -35,35 +35,60 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.lotterylistfragmentactivity.MainActivity.add1;
-import static com.example.lotterylistfragmentactivity.MainActivity.add2;
 import static com.example.lotterylistfragmentactivity.MainActivity.convertDateStringToInt;
-import static com.example.lotterylistfragmentactivity.MainActivity.iD;
-import static com.example.lotterylistfragmentactivity.MainActivity.key;
 import static com.example.lotterylistfragmentactivity.MainActivity.lottoList;
 import static com.example.lotterylistfragmentactivity.MainActivity.myDatabase;
-import static com.example.lotterylistfragmentactivity.MainActivity.server;
-import static com.example.lotterylistfragmentactivity.MainActivity.user;
-import static java.lang.Thread.sleep;
+import static com.example.lotterylistfragmentactivity.MainActivity.username;
 
 public class CustomMenuActivity extends AppCompatActivity {
 	private Intent mIntent;
 	private static final String TAG = "CustomMenu";
 	private FragmentManager fm;
 	ActionBar actionBar;
+	Boolean makeMenuItemsEnabled = false;//make certain menu items enabled/disabled
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater mMenuInflater = getMenuInflater();
 		mMenuInflater.inflate(R.menu.menu_activity, menu);
 		changeActionBarTitle("LOTTO NUMBER GENERATOR");
+
+
 		return true;
 	}
 
 	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		//return super.onPrepareOptionsMenu(menu);
+
+		if (makeMenuItemsEnabled) {
+			menu.findItem(R.id.menu_deleteDataFromServer).setEnabled(true);
+			menu.findItem(R.id.menu_downloadFromServer).setEnabled(true);
+			menu.findItem(R.id.menu_uploadToServer).setEnabled(true);
+		}else {
+			menu.findItem(R.id.menu_deleteDataFromServer).setEnabled(false);
+			menu.findItem(R.id.menu_downloadFromServer).setEnabled(false);
+			menu.findItem(R.id.menu_uploadToServer).setEnabled(false);
+		}
+
+		return true;
+
+	}
+
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		int fragmentSelector;
+		//int fragmentSelector;
 
 		switch (item.getItemId()) {
+			case(R.id.menu_enabledID):
+				if(makeMenuItemsEnabled ){
+					makeMenuItemsEnabled = false;
+					Toast.makeText(this, "Menu Items Disabled", Toast.LENGTH_LONG).show();
+				}else{
+					makeMenuItemsEnabled = true;
+					Toast.makeText(this, "Menu Items Enabled", Toast.LENGTH_LONG).show();
+				}
+				return true;
+
 			case (R.id.menu_generateLottoNumbers)://When the Delete Database menu item is clicked, the event below is performed:
 				changeActionBarTitle("LOTTO NUMBER GENERATOR");
 				fm = getSupportFragmentManager();
@@ -109,6 +134,7 @@ public class CustomMenuActivity extends AppCompatActivity {
 							public void onClick(DialogInterface dialogInterface, int i) {
 
 								try {
+									deleteParseServerDatabase();
 									uploadLottoNumbersToServer();
 								} catch (IOException e) {
 									e.printStackTrace();
@@ -162,6 +188,15 @@ public class CustomMenuActivity extends AppCompatActivity {
 							}
 						}).show();
 				return true;
+
+
+			case (R.id.menu_logout):
+				ParseUser.logOut();
+				Intent intent2 = new Intent(getApplicationContext(), LoginActivity.class);
+				startActivity(intent2);
+				Toast.makeText(this, username + " logged out"
+						, Toast.LENGTH_SHORT).show();
+				return true;
 				default:
 		}//end switch
 		return true;
@@ -174,15 +209,15 @@ public class CustomMenuActivity extends AppCompatActivity {
 	 * @post none
 	 ********************************************************************************************/
 	public void deleteParseServerDatabase(){
-
-		Parse.enableLocalDatastore(this);
+  /*
+		enableLocalDatastore(this);
 		Parse.initialize(new Parse.Configuration.Builder(getApplicationContext())
 				.applicationId(iD)
 				.clientKey(key)
 				.server(server)
 				.build()
 		);
-
+*/
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("LotteryNumbers");
 		query.whereExists("rbrewer");
 
@@ -203,15 +238,15 @@ public class CustomMenuActivity extends AppCompatActivity {
 	}
 
 	private void uploadLottoNumbersToServer() throws IOException {
-
-		Parse.enableLocalDatastore(this);
+/*
+		enableLocalDatastore(this);
 		Parse.initialize(new Parse.Configuration.Builder(getApplicationContext())
 				.applicationId(iD)
 				.clientKey(key)
 				.server(server)
 				.build()
 		);
-
+*/
 		List<LotteryNumbersHolder> data = MainActivity.getDatabaseContent();
 
 
@@ -244,16 +279,24 @@ public class CustomMenuActivity extends AppCompatActivity {
 	void downloadFromServer(){
 
 		final  String TAG = "Download";
-
+     /*
 		//final ArrayList<Object>[] lottoList = new ArrayList<Object>[1];
-		Parse.enableLocalDatastore(this);
+		//Parse.enableLocalDatastore(CustomMenuActivity.this);
+		Parse.enableLocalDatastore(getApplicationContext());
 		Parse.initialize(new Parse.Configuration.Builder(getApplicationContext())
-				.applicationId(iD)
-				.clientKey(key)
-				.server(server)
+				.applicationId("f923dcae6e2e3497c95b0bcffa49b5c6c3c12d98")
+				.clientKey("4c37d7ab882aa8f6d1dd6e81a067c971a82f553a")
+				.server("http://3.86.49.161:80/parse/")
 				.build()
 		);
 
+
+		ParseACL defaultACL = new ParseACL();
+		defaultACL.setPublicReadAccess(true);
+		defaultACL.setPublicWriteAccess(true);
+		ParseACL.setDefaultACL(defaultACL, true);
+
+      */
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("LotteryNumbers");
 		query.whereEqualTo("Username", "rbrewer");
 		query.setLimit(500);

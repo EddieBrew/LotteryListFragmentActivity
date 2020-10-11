@@ -21,4 +21,13 @@
 	<string name="upload_lotto_numbers_to_server">upload_lotto_numbers_to_server</string>
 	<string name="download_from_server">DownLoad From Server</string>
 	<string name="delete_all_data_from_server">Delete All Data From Server</string>
+	<string name="login">Login</string>
+	<string name="remstring">Remember my login information</string>
+	<string name="or_signup">or, SignUp</string>
+	<string name="chkbox"> chkbox </string>
+	<string name="name"> name </string>
+	<string name="pWord"> pword </string>
+	<string name="enabled_button">Enabled Button</string>
+	<string name="enter_your_username">Enter your username...</string>
+	<string name="enter_your_password">Enter your password...</string>
 </resources>
