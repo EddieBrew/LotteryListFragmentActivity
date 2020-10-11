@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/activity_login"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".LoginActivity">
+
+	<ImageView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:scaleType="fitXY"
+		android:src="@drawable/lotto"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		tools:layout_editor_absoluteX="-32dp" />
+
+	<TextView
+		android:id="@+id/pageTitle"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="9dp"
+		android:layout_marginTop="20dp"
+		android:ems="10"
+		android:gravity="center"
+		android:text="@string/login"
+		android:textColor="@color/Blue"
+		android:textSize="30sp"
+		android:textStyle="bold"
+		app:layout_constraintHorizontal_bias="1.0"
+		app:layout_constraintLeft_toLeftOf="parent"
+		app:layout_constraintRight_toRightOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
+
+
+	<EditText
+		android:id="@+id/usernameEditText"
+		android:layout_width="match_parent"
+		android:layout_height="60dp"
+		android:layout_marginStart="12dp"
+		android:layout_marginTop="100dp"
+		android:layout_marginEnd="16dp"
+		android:ems="10"
+		android:hint="@string/enter_your_username"
+		android:inputType="text"
+		android:textColor="@color/Blue"
+		android:textSize="28sp"
+		android:textStyle="bold"
+		app:layout_constraintHorizontal_bias="1.0"
+		app:layout_constraintLeft_toLeftOf="parent"
+		app:layout_constraintRight_toRightOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/pageTitle" />
+
+	<EditText
+		android:id="@+id/passwordEditText"
+		android:layout_width="match_parent"
+		android:layout_height="60dp"
+		android:layout_marginStart="16dp"
+		android:layout_marginTop="150dp"
+		android:layout_marginEnd="16dp"
+		android:ems="10"
+		android:hint="@string/enter_your_password"
+		android:inputType="textPassword"
+		android:textColor="@color/Blue"
+		android:textSize="28sp"
+		android:textStyle="bold"
+		app:layout_constraintHorizontal_bias="1.0"
+		app:layout_constraintLeft_toLeftOf="parent"
+		app:layout_constraintRight_toRightOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/usernameEditText" />
+
+	<Button
+		android:id="@+id/statusBtn"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="100dp"
+		android:layout_marginTop="250dp"
+		android:onClick="signUp"
+		android:text="@string/login"
+		android:textColor="@color/Blue"
+		app:layout_constraintLeft_toLeftOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/passwordEditText" />
+
+	<TextView
+		android:id="@+id/changeSignupModeTextView"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="200dp"
+		android:layout_marginTop="250dp"
+		android:clickable="true"
+		android:onClick="onClick"
+		android:text="@string/or_signup"
+		android:textColor="@color/Blue"
+		android:textSize="22sp"
+		android:textStyle="bold"
+		android:visibility="visible"
+		app:layout_constraintBottom_toBottomOf="@+id/statusBtn"
+		app:layout_constraintLeft_toRightOf="@+id/statusBtn" />
+
+	<CheckBox
+		android:id="@+id/chkBoxSaveLogOn"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="20dp"
+		android:layout_marginTop="300dp"
+		android:text="@string/remstring"
+		android:textColor="@color/Blue"
+		android:textSize="22sp"
+		android:textStyle="bold"
+		app:layout_constraintLeft_toRightOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/statusBtn" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
